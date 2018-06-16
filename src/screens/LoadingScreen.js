@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { View, Image } from 'react-native'
 
-export default LoadingScreen = () => {
+export default class LoadingScreen extends Component{
+
     style = {
         container: {
             flex: 1,
@@ -10,10 +11,21 @@ export default LoadingScreen = () => {
             justifyContent: 'center'
         },        
     }
+    
+    componentDidMount(){
+        //update this
+        setTimeout(() => {
+            let { navigation: {navigate}} = this.props
+            navigate('SignIn')
+        }, 2000)
+    }
 
-    return (
-        <View style={style.container}>
-            <Image source={require('./src/assets/logo/logo-white.png')}/>
-        </View>
-    )
+    render(){
+        return(
+            <View style={this.style.container}>
+                <Image source={require('../assets/logo/logo-white.png')}/>            
+            </View>
+        )
+    }
 }
+

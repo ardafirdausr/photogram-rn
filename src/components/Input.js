@@ -3,6 +3,7 @@ import { Item, Input, Label, Icon } from 'native-base'
 import { TouchableWithoutFeedback } from 'react-native'
 
 export default DInput = ({
+    fontSize = 15,
     leftIcon,
     rightIcon,
     deleteIcon,
@@ -14,14 +15,19 @@ export default DInput = ({
     onSubmitEditing,
     placeholder,
     secureTextEntry,
+    style,
     inputStyle,
+    labelStyle,
     ...config
 }) => (
-    <Item {...config}>
+    <Item style={style} {...config}>                
+        <Label style={labelStyle}>{label}</Label>
         <Icon active name={leftIcon}/>
-        <Label>{label}</Label>
-        <Input
-            style={inputStyle} 
+        <Input            
+            style={{
+                ...inputStyle,
+                fontSize: fontSize
+            }} 
             value={value} 
             onChangeText={onChangeText}
             onFocus={onFocus}
@@ -34,9 +40,9 @@ export default DInput = ({
             <TouchableWithoutFeedback 
               onPress={() => onChangeText('')}
               > 
-                <Icon name={rightIcon}/>                
+                <Icon name={rightIcon || 'close-circle'}/>                
             </TouchableWithoutFeedback> :
-            <Icon name={rightIcon}/>                        
+            <Icon name={rightIcon}/>
         }
     </Item>
 )

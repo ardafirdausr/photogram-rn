@@ -1,17 +1,26 @@
 import React from 'react'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, Keyboard } from 'react-native'
 import { Text, Icon, Button } from 'native-base'
 
 export default DButton = ({ 
     loadingState:loading, 
     loadingColor:color = "grey", 
-    children:text,
+    children:text,    
+    onPress,
     leftIcon,
     rightIcon,
     style,
     ...buttonConfig
 }) => (    
-    <Button style={style} {...buttonConfig}>
+    <Button style={style} 
+      onPress={
+          loading ? undefined : () => {
+              onPress()
+              Keyboard.dismiss()
+          }
+      }
+      {...buttonConfig}
+    >
         <Icon name={leftIcon}/>
         {
             loading ? 

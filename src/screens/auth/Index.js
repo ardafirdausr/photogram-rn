@@ -1,7 +1,18 @@
-import Login from './Login'
-import Register from './Register'
+import { 
+    createSwitchNavigatorm, 
+    createStackNavigator,    
+} from 'react-navigation'
 
-export {
-    Login,
-    Register
-}
+import SignIn from './SignIn'
+import SignUp from './SignUp'
+
+export default createStackNavigator(
+    { SignIn, SignUp },
+    { 
+        initialRouteName: 'SignIn',
+        headerMode: 'none',
+        navigationOptions: {
+            // headerBackground: 'white'
+        }
+    }
+)

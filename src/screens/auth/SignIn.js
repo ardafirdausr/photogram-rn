@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View, Image, KeyboardAvoidingView, ScrollView } from 'react-native'
-import { Text } from 'native-base'
-import { Input, Button, SafeContainer } from '../../components'
+import { Input, Button, SafeContainer, SingleNav } from '../../components'
 
 export default class Login extends Component {
     state = {
@@ -15,7 +14,8 @@ export default class Login extends Component {
     style = {
         container: {
             flex: 1,            
-            flexDirection: 'column'
+            flexDirection: 'column',
+            backgroundColor: 'white'
         },
         main: {
             flex: 1,
@@ -27,34 +27,20 @@ export default class Login extends Component {
             marginBottom: 60
         },
         input: {
-            marginVertical: 0,            
+            marginVertical: 0,                        
         },
         button: {
             marginTop: 50
-        },
-        nav: {
-            paddingVertical: 9,
-            borderTopWidth: 1,
-            borderColor: '#eaeaea',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#f5f5f5',
-        },
-        navText: {
-            color: '#6e6e6e',
-            fontSize: 13,            
-        },
+        },        
     }
 
-    _disableSignUp(){
+    _disableSignUp = () => {
         let {emailValidation, passwordValidation} = this.state        
         if(emailValidation && passwordValidation) return false
         else return true
     }
 
-    _isValid(key, value){
-        console.log(Boolean(this.state[key]))
+    _isValid = (key, value) => {
         if(this.state[key]) return {
             success: true,            
             rightIcon: "checkmark-circle"
@@ -66,7 +52,7 @@ export default class Login extends Component {
         }
     }
 
-    _emailVerification(value){
+    _emailVerification = (value) => {
         if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)){
             this.setState({ 
                 ...this.state, 
@@ -83,8 +69,8 @@ export default class Login extends Component {
         }        
     }    
 
-    _passwordVerification(value){
-        if(/^\w{6,}$/.test(value) && /^\w*\d+\w*$/.test(value)){                        
+    _passwordVerification = (value) => {
+        if(/^\w{6,20}$/.test(value) && /^\w*\d+\w*$/.test(value)){                        
             this.setState({ 
                 ...this.state, 
                 password: value,
@@ -100,8 +86,13 @@ export default class Login extends Component {
         }
     }
 
-    _stateOnChange(key, value){
+    _stateOnChange = (key, value) => {
         this.setState({ ...this.state, [key]: value })
+    }
+
+    _navigate = (screen) => {
+        let {navigation: {navigate}} = this.props
+        navigate(screen)
     }
 
     render(){
@@ -153,18 +144,15 @@ export default class Login extends Component {
                             primary                    
                             block
                             loadingState={this.state.loading}
-                            loadingColor="blue"
+                            loadingColor="white"
                             disabled={this._disableSignUp()}
                         >Sign In</Button>
                     </KeyboardAvoidingView>                
-                <View style={this.style.nav}>
-                    <View>
-                        <Text style={this.style.navText}>Didnt have account ? </Text>    
-                    </View>
-                    <View style={{ marginLeft: 5 }}>
-                        <Text style={{...this.style.navText, color: '#007aff'}} >Sign Up</Text>
-                    </View>
-                </View>
+                    <SingleNav
+                      title="Did't have account ? "
+                      navTitle="Sign Up"           
+                      onPress={() => this._navigate('SignUp')}           
+                    />
             </SafeContainer>
         )
     }

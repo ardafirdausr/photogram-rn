@@ -1,6 +1,5 @@
 import React from 'react'
-import Login from './src/screens/auth/Login'
+import Screens from './src/screens/'
 
-
-export default Login
+export default Screens
 
