@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, AsyncStorage } from 'react-native'
 
 export default class LoadingScreen extends Component{
 
@@ -15,9 +15,14 @@ export default class LoadingScreen extends Component{
     componentDidMount(){
         //update this
         setTimeout(() => {
-            let { navigation: {navigate}} = this.props
-            navigate('SignIn')
-        }, 2000)
+            this._isLogged()
+        }, 1000)
+    }
+
+    _isLogged = async () => {
+        let { navigation: {navigate} } = this.props        
+        logged = await AsyncStorage.getItem('photogram_token')
+        navigate( logged ? 'Main' : 'Auth')
     }
 
     render(){

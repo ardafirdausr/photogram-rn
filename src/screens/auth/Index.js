@@ -10,9 +10,6 @@ export default createStackNavigator(
     { SignIn, SignUp },
     { 
         initialRouteName: 'SignIn',
-        headerMode: 'none',
-        navigationOptions: {
-            // headerBackground: 'white'
-        }
+        headerMode: 'none',        
     }
 )

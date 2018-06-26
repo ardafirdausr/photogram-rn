@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { View, Image, KeyboardAvoidingView, ScrollView } from 'react-native'
+import { Image, KeyboardAvoidingView, AsyncStorage, Alert } from 'react-native'
 import { Input, Button, SafeContainer, SingleNav } from '../../components'
+import serverAPI from '../../service/serverAPI'
 
 export default class Login extends Component {
     state = {
-        email: '',
-        emailValidation: false,
-        password: '',
-        passwordValidation: false,
+        email: '',        
+        password: '',        
         loading: false
     }
 
@@ -34,57 +33,11 @@ export default class Login extends Component {
         },        
     }
 
-    _disableSignUp = () => {
-        let {emailValidation, passwordValidation} = this.state        
-        if(emailValidation && passwordValidation) return false
+    _disableSignUp = () => {        
+        let { email, password } = this.state
+        if( !!email && !!password ) return false
         else return true
-    }
-
-    _isValid = (key, value) => {
-        if(this.state[key]) return {
-            success: true,            
-            rightIcon: "checkmark-circle"
-        }
-        else if(value) return {            
-            error: true,
-            rightIcon: "close-circle",
-            deleteIcon: true
-        }
-    }
-
-    _emailVerification = (value) => {
-        if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)){
-            this.setState({ 
-                ...this.state, 
-                email: value,
-                emailValidation: true 
-            })
-        }
-        else{
-            this.setState({ 
-                ...this.state, 
-                email: value,
-                emailValidation: false
-            })            
-        }        
-    }    
-
-    _passwordVerification = (value) => {
-        if(/^\w{6,20}$/.test(value) && /^\w*\d+\w*$/.test(value)){                        
-            this.setState({ 
-                ...this.state, 
-                password: value,
-                passwordValidation: true 
-            })
-        }
-        else{
-            this.setState({ 
-                ...this.state, 
-                password: value,
-                passwordValidation: false
-            })
-        }
-    }
+    }  
 
     _stateOnChange = (key, value) => {
         this.setState({ ...this.state, [key]: value })
@@ -93,6 +46,33 @@ export default class Login extends Component {
     _navigate = (screen) => {
         let {navigation: {navigate}} = this.props
         navigate(screen)
+    }
+
+    _signIn = () => {
+        this.setState({ ...this.state, loading: true })
+        let { email, password } = this.state
+        serverAPI.post('users/auth', { email, password })
+          .then( async res => {                            
+            let { data } = res
+            await AsyncStorage.setItem('photogram_token', data.token)
+            this.setState({ ...this.state, loading: false })
+            this._navigate('Main')
+          })
+          .catch( rej => {
+              try{
+                  this.setState({ ...this.state, loading: false })                        
+                  let { response: {data: {error}}} = rej
+                  if('message' in error){
+                      Alert.alert(error.message)
+                      return
+                  }            
+                  Alert.alert('Sign In Failed')
+              }
+              catch(e){
+                this.setState({ ...this.state, loading: false })                        
+                Alert.alert("Connection timeout")
+              }
+            })
     }
 
     render(){
@@ -114,8 +94,9 @@ export default class Login extends Component {
                             placeholder="Email"
                             leftIcon="md-contact"
                             value={this.state.email}
-                            onChangeText={value => this._emailVerification(value)}
-                            {...this._isValid('emailValidation', this.state.email)}
+                            autoCapitalize="none"
+                            onChangeText={value => this._stateOnChange('email', value)}           
+                            clearButtonMode="while-editing"                      
                         />
                         <Input
                             underlined
@@ -123,24 +104,13 @@ export default class Login extends Component {
                             placeholder="Password"                    
                             leftIcon="md-lock"
                             value={this.state.password}
-                            onChangeText={value => this._passwordVerification(value)}
-                            secureTextEntry
-                            {...this._isValid('passwordValidation', this.state.password)}
+                            onChangeText={value => this._stateOnChange('password', value)}
+                            clearButtonMode="while-editing"                      
+                            secureTextEntry                                                                                    
                         />
                         <Button
                             style={this.style.button}
-                            onPress={() => {
-                                this.setState({
-                                    ...this.state, 
-                                    ['loading']: true
-                                })
-                                setTimeout(() => {
-                                    this.setState({
-                                        ...this.state, 
-                                        ['loading']: false
-                                    })
-                                }, 2000)
-                            }}
+                            onPress={this._signIn}
                             primary                    
                             block
                             loadingState={this.state.loading}
