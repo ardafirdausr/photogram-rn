@@ -5,6 +5,6 @@ import Main from './main'
 import LoadingScreen from './LoadingScreen'
 
 export default createSwitchNavigator(
-    {  LoadingScreen, Auth, Main },
-    { initialRouteName: 'LoadingScreen' }
+	{  LoadingScreen, Auth, Main },
+	{ initialRouteName: 'LoadingScreen' }
 )

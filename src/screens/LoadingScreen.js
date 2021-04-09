@@ -28,7 +28,10 @@ export default class LoadingScreen extends Component{
     render(){
         return(
             <View style={this.style.container}>
-                <Image source={require('../assets/logo/logo-white.png')}/>            
+                <Image 
+                  source={require('../assets/logo/logo-white.png')}
+                  style={{width: 200, height: 123}}
+                  />            
             </View>
         )
     }

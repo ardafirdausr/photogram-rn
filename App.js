@@ -1,6 +1,7 @@
 import React from 'react'
 import Screens from './src/screens/'
-import { Text } from 'react-native'
+import { View, Image, Dimensions} from 'react-native'
 
 export default Screens
+
 
